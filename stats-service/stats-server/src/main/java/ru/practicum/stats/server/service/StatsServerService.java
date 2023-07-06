@@ -28,15 +28,15 @@ public class StatsServerService implements StatsServerServiceInt {
     public List<HitStatsDto> getStats(List<String> uris, LocalDateTime start, LocalDateTime end, boolean unique) {
         if (uris.isEmpty()) {
             if (unique) {
-                return statsStorage.getAllUniqueHits(start, end);
+                return statsStorage.findAllUniqueHits(start, end);
             } else {
-                return statsStorage.getAllHits(start, end);
+                return statsStorage.findAllHits(start, end);
             }
         } else {
             if (unique) {
-                return statsStorage.getUniqueHitsByUri(uris, start, end);
+                return statsStorage.findUniqueHitsByUri(uris, start, end);
             } else {
-                return statsStorage.getAllHitsByUri(uris, start, end);
+                return statsStorage.findAllHitsByUri(uris, start, end);
             }
         }
     }

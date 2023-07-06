@@ -16,7 +16,7 @@ public interface StatsServerStorage extends JpaRepository<Hit, Integer> {
                     "GROUP BY h.app, h.uri " +
                     "ORDER BY COUNT(h.ip) DESC"
     )
-    List<HitStatsDto> getAllHitsByUri(List<String> uris, LocalDateTime start, LocalDateTime end);
+    List<HitStatsDto> findAllHitsByUri(List<String> uris, LocalDateTime start, LocalDateTime end);
 
     @Query(
             "SELECT new ru.practicum.stats.dto.HitStatsDto(h.app, h.uri, COUNT(h.ip)) " +
@@ -25,7 +25,7 @@ public interface StatsServerStorage extends JpaRepository<Hit, Integer> {
                     "GROUP BY h.app, h.uri " +
                     "ORDER BY COUNT(h.ip) DESC"
     )
-    List<HitStatsDto> getAllHits(LocalDateTime start, LocalDateTime end);
+    List<HitStatsDto> findAllHits(LocalDateTime start, LocalDateTime end);
 
     @Query(
             "SELECT new ru.practicum.stats.dto.HitStatsDto(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
@@ -34,7 +34,7 @@ public interface StatsServerStorage extends JpaRepository<Hit, Integer> {
                     "GROUP BY h.app, h.uri " +
                     "ORDER BY COUNT(h.ip) DESC"
     )
-    List<HitStatsDto> getUniqueHitsByUri(List<String> uris, LocalDateTime start, LocalDateTime end);
+    List<HitStatsDto> findUniqueHitsByUri(List<String> uris, LocalDateTime start, LocalDateTime end);
 
     @Query(
             "SELECT new ru.practicum.stats.dto.HitStatsDto(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
@@ -43,6 +43,6 @@ public interface StatsServerStorage extends JpaRepository<Hit, Integer> {
                     "GROUP BY h.app, h.uri " +
                     "ORDER BY COUNT(h.ip) DESC"
     )
-    List<HitStatsDto> getAllUniqueHits(LocalDateTime start, LocalDateTime end);
+    List<HitStatsDto> findAllUniqueHits(LocalDateTime start, LocalDateTime end);
 
 }
