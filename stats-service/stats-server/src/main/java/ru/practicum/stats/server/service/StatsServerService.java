@@ -1,6 +1,5 @@
 package ru.practicum.stats.server.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.HitDto;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class StatsServerService implements StatsServerServiceInt{
+public class StatsServerService implements StatsServerServiceInt {
     private final StatsServerStorage statsStorage;
 
     @Autowired
