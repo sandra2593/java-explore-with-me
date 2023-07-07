@@ -8,9 +8,9 @@ import ru.practicum.stats.server.model.Hit;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface StatsServerStorage extends JpaRepository<Hit, Integer> {
-    @Query(
-            "SELECT new ru.practicum.stats.dto.HitStatsDto(h.app, h.uri, COUNT(h.ip)) " +
+public interface StatsServerStorage extends JpaRepository<Hit, Long> {
+
+    @Query("SELECT new ru.practicum.stats.dto.HitStatsDto(h.app, h.uri, COUNT(h.ip)) " +
                     "FROM Hit h " +
                     "WHERE h.uri in :uris AND timestamp BETWEEN :start AND :end " +
                     "GROUP BY h.app, h.uri " +

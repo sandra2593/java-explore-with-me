@@ -35,10 +35,10 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
-  ewm-service:
-    build: ./stats-service/ewm-service
-    ports:
-      - "8081:8081"
+#  ewm-service:
+#    build: ./stats-service/ewm-service
+#    ports:
+#      - "8081:8081"
 
 #  ewm-db:
 #    image: postgres:14-alpine
