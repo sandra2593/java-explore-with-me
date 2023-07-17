@@ -26,4 +26,13 @@ public class CategoryMapper {
         return category;
     }
 
+    public static Category fromCategoryUpdate(CategoryDto newCategoryDto, Category category) {
+        if (newCategoryDto.getName().isEmpty()) {
+            newCategoryDto.setName(null);
+        }
+        category.setId(newCategoryDto.getId());
+        category.setName(newCategoryDto.getName() != null ? newCategoryDto.getName() : category.getName());
+        return category;
+    }
+
 }

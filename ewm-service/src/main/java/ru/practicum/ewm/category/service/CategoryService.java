@@ -64,14 +64,15 @@ public class CategoryService implements CategoryServiceIntf {
         if (categoryDto.getName().length() > 50) {
             throw new EventDateException("поле name <= 50, текущее: " + categoryDto.getName().length());
         }
-        Category categoryToUpdate = CategoryMapper.fromCategoryDto(getCategoryById(catId));
-        categoryToUpdate.setName(categoryDto.getName());
 
-        try {
-            return CategoryMapper.toCategoryDto(categoryStorage.save(categoryToUpdate));
-        } catch (DataIntegrityViolationException ex) {
-            throw new DuplicateException(String.format("есть такая категория ", categoryDto.getName()));
+        Category catWithName = categoryStorage.findCategoryByName(categoryDto.getName()).orElse(null);
+        Category categoryToUpdate = CategoryMapper.fromCategoryDto(getCategoryById(catId));
+        if ((catWithName != null) && (catWithName.getId() != catId)) {
+            throw new DuplicateException(String.format("есть такая категория ", catWithName));
         }
+
+        categoryToUpdate.setName(categoryDto.getName());
+        return CategoryMapper.toCategoryDto(categoryStorage.save(categoryToUpdate));
     }
 
     @Override
