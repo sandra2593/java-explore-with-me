@@ -13,7 +13,6 @@ import ru.practicum.stats.gateway.StatsClient;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +24,7 @@ public class StatsService implements StatsServiceIntf {
     private String appName;
 
     @Autowired
-    public StatsService(@Value("${spring.application.name}") String appName, @Value("${format.pattern.datetime}") String dateTimeFormat
-            , StatsClient statsClient
-    ) {
+    public StatsService(@Value("${spring.application.name}") String appName, @Value("${format.pattern.datetime}") String dateTimeFormat, StatsClient statsClient) {
         this.appName = appName;
         this.statsClient = statsClient;
         this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);

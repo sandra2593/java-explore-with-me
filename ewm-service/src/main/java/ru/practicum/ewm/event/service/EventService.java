@@ -3,7 +3,6 @@ package ru.practicum.ewm.event.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
@@ -23,7 +22,6 @@ import ru.practicum.ewm.exception.EventStatusException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.stats.StatsService;
 import ru.practicum.ewm.user.mapper.UserMapper;
-import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.service.UserService;
 import ru.practicum.stats.dto.HitStatsDto;
 
