@@ -36,8 +36,7 @@ public class StatsServerService implements StatsServerServiceInt {
             if (unique) {
                 return statsStorage.findUniqueHitsByUri(uris, start, end);
             } else {
-                List<HitStatsDto> l = statsStorage.findAllHitsByUri(uris, start, end);
-                return l;
+                return statsStorage.findAllHitsByUri(uris, start, end);
             }
         }
     }
