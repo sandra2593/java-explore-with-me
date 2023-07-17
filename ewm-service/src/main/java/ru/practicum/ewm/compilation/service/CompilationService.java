@@ -14,6 +14,7 @@ import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.mapper.EventMapper;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.service.EventService;
+import ru.practicum.ewm.exception.EventDateException;
 import ru.practicum.ewm.exception.NotFoundException;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class CompilationService implements CompilationServiceIntf {
     @Override
     public CompilationDto getCompilationById(long compId) {
         Optional<Compilation> compilation = compilationStorage.findById(compId);
-        if (Objects.nonNull(compilation)) {
+        if (compilation.isPresent()) {
             return CompilationMapper.toCompilationDto(compilation.get());
         } else {
             throw new NotFoundException(String.format("нет подборки событий с id ", compId));
@@ -58,6 +59,9 @@ public class CompilationService implements CompilationServiceIntf {
     @Override
     @Transactional
     public CompilationDto add(NewCompilationDto newCompilationDto) {
+        if (newCompilationDto.getTitle().length() > 50) {
+            throw new EventDateException("поле title <= 50, текущее: " + newCompilationDto.getTitle().length());
+        }
         List<EventFullDto> eventsDtos = eventService.getEventsByIds(newCompilationDto.getEvents());
         return CompilationMapper.toCompilationDto(compilationStorage.save(CompilationMapper.fromNewCompilationDto(newCompilationDto, eventsDtos)));
     }
@@ -72,10 +76,10 @@ public class CompilationService implements CompilationServiceIntf {
     public CompilationDto update(long compId, UpdateCompilationRequest updateCompilationRequest) {
         Compilation compilationToUpdate = CompilationMapper.fromCompilationDto(getCompilationById(compId));
 
-        if (updateCompilationRequest.getEvents() != null) {
+        if (Objects.nonNull(updateCompilationRequest.getEvents())) {
             Set<Event> events = eventService.getEventsByIds(updateCompilationRequest.getEvents()).stream()
                     .map(EventMapper::fromEventFullDto).collect(Collectors.toSet());
-            if (Objects.isNull(events)) {
+            if (events.isEmpty()) {
                 throw new NotFoundException("таких событий нет");
             }
             compilationToUpdate.setEvents(events);
@@ -84,6 +88,9 @@ public class CompilationService implements CompilationServiceIntf {
             compilationToUpdate.setPinned(updateCompilationRequest.getPinned());
         }
         if (Objects.nonNull(updateCompilationRequest.getTitle())) {
+            if (updateCompilationRequest.getTitle().length() > 50) {
+                throw new EventDateException("поле title <= 50, текущее: " + updateCompilationRequest.getTitle().length());
+            }
             compilationToUpdate.setTitle(updateCompilationRequest.getTitle());
         }
         return CompilationMapper.toCompilationDto(compilationStorage.save(compilationToUpdate));

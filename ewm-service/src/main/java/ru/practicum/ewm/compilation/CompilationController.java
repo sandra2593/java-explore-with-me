@@ -8,6 +8,8 @@ import ru.practicum.ewm.compilation.service.CompilationService;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/compilations")
 public class CompilationController {
     private final CompilationService compilationService;
 

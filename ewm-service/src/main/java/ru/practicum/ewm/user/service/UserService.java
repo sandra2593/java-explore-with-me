@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.exception.DuplicateException;
+import ru.practicum.ewm.exception.EventDateException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.NewUserRequest;
@@ -29,6 +31,18 @@ public class UserService implements UserServiceIntf {
     @Override
     public UserDto add(NewUserRequest newUserRequest) {
         User user = UserMapper.fromUserRequestDto(newUserRequest);
+        if (newUserRequest.getName().length() < 2 || newUserRequest.getName().length() > 250) {
+            throw new EventDateException("поле name >= 2 && <= 250, текущее: " + newUserRequest.getName().length());
+        }
+        if (newUserRequest.getEmail().length() < 6 || newUserRequest.getEmail().length() > 254) {
+            throw new EventDateException("поле email >= 2 && <= 250, текущее: " + newUserRequest.getEmail().length());
+        }
+
+        User userWithName = userStorage.findUserByName(newUserRequest.getName()).orElse(null);
+        if (userWithName != null) {
+            throw new DuplicateException(String.format("есть такое имя ", userWithName));
+        }
+
         try {
             return UserMapper.toUserDto(userStorage.save(user));
         } catch (DataIntegrityViolationException ex) {
@@ -38,7 +52,7 @@ public class UserService implements UserServiceIntf {
 
     @Override
     public void delete(long userId) {
-        if (Objects.nonNull(userStorage.findById(userId))) {
+        if (userStorage.findById(userId).isPresent()) {
             userStorage.deleteById(userId);
         } else {
             throw new NotFoundException(String.format("нет пользователя с id ", userId));
@@ -60,7 +74,7 @@ public class UserService implements UserServiceIntf {
     @Override
     public UserDto getUserById(long userId) {
         Optional<User> user = userStorage.findById(userId);
-        if (Objects.nonNull(user)) {
+        if (user.isPresent()) {
             return UserMapper.toUserDto(user.get());
         } else {
             throw new NotFoundException(String.format("нет пользователя с id ", userId));

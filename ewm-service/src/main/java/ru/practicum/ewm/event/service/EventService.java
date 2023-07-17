@@ -57,7 +57,7 @@ public class EventService implements EventServiceIntf {
 
     @Override
     @Transactional
-    public EventFullDto update(long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
+    public EventFullDto updateAdmin(long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         Event modifiredEvent = EventMapper.fromEventFullDto(getEventById(eventId));
         if (Objects.nonNull(updateEventAdminRequest.getStateAction())) {
             if (updateEventAdminRequest.getStateAction().equals(EventStatusAction.PUBLISH_EVENT) && !modifiredEvent.getState().equals(EventStatus.PENDING)) {
@@ -102,7 +102,7 @@ public class EventService implements EventServiceIntf {
     @Override
     public EventFullDto getPublishedEventById(long eventId, HttpServletRequest request) {
         Optional<Event> optionalEvent = eventStorage.findEventByIdAndState(eventId, EventStatus.PUBLISHED);
-        if (Objects.nonNull(optionalEvent)) {
+        if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
             statsService.create(request.getRemoteAddr(), request.getRequestURI());
             List<HitStatsDto> stats = statsService.getStats(List.of(request.getRequestURI()), null, null, true);
@@ -120,7 +120,7 @@ public class EventService implements EventServiceIntf {
     @Override
     public EventFullDto getEventById(long eventId) {
         Optional<Event> event = eventStorage.findById(eventId);
-        if (Objects.nonNull(event)) {
+        if (event.isPresent()) {
             return EventMapper.toEventFullDto(event.get());
         } else {
             throw new NotFoundException(String.format("нет события с id ", eventId));
@@ -140,6 +140,15 @@ public class EventService implements EventServiceIntf {
         if (ChronoUnit.HOURS.between(LocalDateTime.now(), newEventDto.getEventDate()) < 2) {
             throw new EventDateException("время события не меньше чем за два часа от настоящего момента");
         }
+        if (newEventDto.getDescription().length() < 20 || newEventDto.getDescription().length() > 7000) {
+            throw new EventDateException("поле description >= 20 && <= 7000, текущее: " + newEventDto.getDescription().length());
+        }
+        if (newEventDto.getAnnotation().length() < 20 || newEventDto.getAnnotation().length() > 2000) {
+            throw new EventDateException("поле annotation >= 20 && <= 2000, текущее: " + newEventDto.getAnnotation().length());
+        }
+        if (newEventDto.getTitle().length() < 3 || newEventDto.getTitle().length() > 120) {
+            throw new EventDateException("поле title >= 3 && <= 120, текущее: " + newEventDto.getTitle().length());
+        }
         Category category = CategoryMapper.fromCategoryDto(categoryService.getCategoryById(newEventDto.getCategory()));
         Event newEvent = EventMapper.fromNewEventDto(newEventDto, category);
         newEvent.setInitiator(UserMapper.fromUserDto(userService.getUserById(userId)));
@@ -150,7 +159,7 @@ public class EventService implements EventServiceIntf {
     @Override
     public EventFullDto getUserEventById(long userId, long eventId) {
         Optional<Event> event = eventStorage.findEventByInitiatorIdAndId(userId, eventId);
-        if (Objects.nonNull(event)) {
+        if (event.isPresent()) {
             return EventMapper.toEventFullDto(event.get());
         } else {
             throw new NotFoundException(String.format("нет события с id %s и инициатором с id ", eventId, userId));
@@ -198,13 +207,20 @@ public class EventService implements EventServiceIntf {
     private EventFullDto partiallyUpdateEvent(Event modifiredEvent, String annotation, Long category,
             String description, LocalDateTime eventDate, Location location, Boolean paid,
             Integer participantLimit, Boolean requestModeration, String title) {
+
         if (Objects.nonNull(annotation)) {
+            if (annotation.length() < 20 || annotation.length() > 2000) {
+                throw new EventDateException("поле annotation >= 20 && <= 2000, текущее: " + annotation.length());
+            }
             modifiredEvent.setAnnotation(annotation);
         }
         if (Objects.nonNull(category)) {
             modifiredEvent.setCategory(CategoryMapper.fromCategoryDto(categoryService.getCategoryById(category)));
         }
         if (Objects.nonNull(description)) {
+            if (description.length() < 20 || description.length() > 7000) {
+                throw new EventDateException("поле description >= 20 && <= 7000, текущее: " + description.length());
+            }
             modifiredEvent.setDescription(description);
         }
         if (Objects.nonNull(location)) {
@@ -220,6 +236,9 @@ public class EventService implements EventServiceIntf {
             modifiredEvent.setRequestModeration(requestModeration);
         }
         if (Objects.nonNull(title)) {
+            if (title.length() < 3 || title.length() > 120) {
+                throw new EventDateException("поле title >= 3 && <= 120, текущее: " + title.length());
+            }
             modifiredEvent.setTitle(title);
         }
         if (Objects.nonNull(eventDate)) {

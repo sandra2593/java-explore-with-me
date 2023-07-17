@@ -63,6 +63,9 @@ public class RequestService implements RequestServiceIntf {
     @Override
     @Transactional
     public RequestDto add(long userId, long eventId) {
+        if (requestStorage.findUserRequestToEvent(eventId, userId).isPresent()) {
+            throw new DuplicateException("повторный запрос на участие в событии");
+        }
         User requester = UserMapper.fromUserDto(userService.getUserById(userId));
         Event event = EventMapper.fromEventFullDto(eventService.getEventById(eventId));
 

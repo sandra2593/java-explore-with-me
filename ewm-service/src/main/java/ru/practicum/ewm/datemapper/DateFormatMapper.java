@@ -1,4 +1,4 @@
-package ru.practicum.stats.server.mapper;
+package ru.practicum.ewm.datemapper;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;

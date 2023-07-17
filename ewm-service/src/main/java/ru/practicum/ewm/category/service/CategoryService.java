@@ -15,6 +15,7 @@ import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.exception.CantDeleteCategoryWithEventsException;
 import ru.practicum.ewm.exception.DuplicateException;
+import ru.practicum.ewm.exception.EventDateException;
 import ru.practicum.ewm.exception.NotFoundException;
 
 import java.util.List;
@@ -35,12 +36,17 @@ public class CategoryService implements CategoryServiceIntf {
 
     @Override
     public CategoryDto add(NewCategoryDto newCategoryDto) {
-        Category category = CategoryMapper.fromNewCategoryDto(newCategoryDto);
-        try {
-            return CategoryMapper.toCategoryDto(categoryStorage.save(category));
-        } catch (DataIntegrityViolationException ex) {
-            throw new DuplicateException(String.format("есть такая категория ", category.getName()));
+        if (newCategoryDto.getName().length() > 50) {
+            throw new EventDateException("поле name <= 50, текущее: " + newCategoryDto.getName().length());
         }
+
+        Category catWithName = categoryStorage.findCategoryByName(newCategoryDto.getName()).orElse(null);
+        if (catWithName != null) {
+            throw new DuplicateException(String.format("есть такая категория ", catWithName));
+        }
+
+        Category category = CategoryMapper.fromNewCategoryDto(newCategoryDto);
+        return CategoryMapper.toCategoryDto(categoryStorage.save(category));
     }
 
     @Override
@@ -56,8 +62,12 @@ public class CategoryService implements CategoryServiceIntf {
 
     @Override
     public CategoryDto update(long catId, CategoryDto categoryDto) {
+        if (categoryDto.getName().length() > 50) {
+            throw new EventDateException("поле name <= 50, текущее: " + categoryDto.getName().length());
+        }
         Category categoryToUpdate = CategoryMapper.fromCategoryDto(getCategoryById(catId));
         categoryToUpdate.setName(categoryDto.getName());
+
         try {
             return CategoryMapper.toCategoryDto(categoryStorage.save(categoryToUpdate));
         } catch (DataIntegrityViolationException ex) {
@@ -73,7 +83,7 @@ public class CategoryService implements CategoryServiceIntf {
     @Override
     public CategoryDto getCategoryById(long catId) {
         Optional<Category> category = categoryStorage.findById(catId);
-        if (Objects.nonNull(category)) {
+        if (category.isPresent()) {
             return CategoryMapper.toCategoryDto(category.get());
         } else {
             throw new NotFoundException(String.format("нет категории с id ", catId));

@@ -12,7 +12,7 @@ import java.util.List;
 public interface EventServiceIntf {
     List<EventFullDto> getAll(EventAdminFilter params, Pageable pageable);
 
-    EventFullDto update(long eventId, UpdateEventAdminRequest updateEventAdminRequest);
+    EventFullDto updateAdmin(long eventId, UpdateEventAdminRequest updateEventAdminRequest);
 
     void update(Event updatedEvent);
 

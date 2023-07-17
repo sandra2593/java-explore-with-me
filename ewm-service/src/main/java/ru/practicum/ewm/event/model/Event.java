@@ -28,10 +28,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 120)
     String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     String annotation;
 
     @ManyToOne
@@ -42,7 +42,7 @@ public class Event {
     @JoinColumn(name = "category", referencedColumnName = "id", nullable = false)
     Category category;
 
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = false, length = 7000)
     String description;
 
     @Column(name = "event_date", nullable = false)
@@ -62,10 +62,10 @@ public class Event {
     @Column
     Boolean paid;
 
-    @Column
+    @Column(name = "participant_limit")
     Integer participantLimit;
 
-    @Column
+    @Column(name = "request_moderation")
     Boolean requestModeration;
 
     @Column
@@ -80,6 +80,6 @@ public class Event {
     @Column(columnDefinition = "INT8 DEFAULT 0", insertable = false, nullable = false)
     Long views = 0L;
 
-    @Column
+    @Column(name = "is_available")
     boolean isAvailable = true;
 }

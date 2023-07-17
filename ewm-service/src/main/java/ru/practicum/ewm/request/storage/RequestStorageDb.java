@@ -8,9 +8,17 @@ import ru.practicum.ewm.request.model.RequestStatus;
 import ru.practicum.ewm.user.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RequestStorageDb extends JpaRepository<Request, Long> {
     List<Request> findAllByRequester(User user);
+
+    @Query("SELECT new Request(req.id, req.created, req.event, req.requester, req.status)" +
+            "FROM Request req " +
+            "WHERE req.event.id = :eventId AND req.requester.id = :requesterId"
+    )
+    Optional<Request> findUserRequestToEvent(long eventId, long requesterId);
+
 
     @Query(
             "SELECT new Request(req.id, req.created, req.event, req.requester, req.status) " +
