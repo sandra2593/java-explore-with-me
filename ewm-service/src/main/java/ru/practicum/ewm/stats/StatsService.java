@@ -14,6 +14,7 @@ import ru.practicum.stats.gateway.StatsClient;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,9 @@ public class StatsService implements StatsServiceIntf {
             start = LocalDateTime.of(2000, 1, 1, 0, 0);
             end = LocalDateTime.of(9999, 1, 1, 0, 0);
         }
+        if (Objects.isNull(unique)) {
+            unique = false;
+        }
 
         ResponseEntity<Object> response = statsClient.get(start.format(dateTimeFormatter), end.format(dateTimeFormatter), uris, unique);
         if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
@@ -54,7 +58,6 @@ public class StatsService implements StatsServiceIntf {
 
         ObjectMapper objectMapper = new ObjectMapper();
         List<Object> stats = (List<Object>) response.getBody();
-//        List<Object> stats = new ArrayList<>();
         return stats.stream().map(object -> objectMapper.convertValue(object, HitStatsDto.class)).collect(Collectors.toList());
     }
 }
