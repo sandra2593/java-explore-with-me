@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.exception.DuplicateException;
 import ru.practicum.ewm.exception.EventDateException;
 import ru.practicum.ewm.exception.NotFoundException;

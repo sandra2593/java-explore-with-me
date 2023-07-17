@@ -19,7 +19,6 @@ import ru.practicum.ewm.exception.EventDateException;
 import ru.practicum.ewm.exception.NotFoundException;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
