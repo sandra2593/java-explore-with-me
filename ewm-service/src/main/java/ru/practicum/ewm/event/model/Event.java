@@ -42,17 +42,17 @@ public class Event {
     @JoinColumn(name = "category", referencedColumnName = "id", nullable = false)
     Category category;
 
-    @Column(nullable = false, length = 7000)
+    @Column(nullable = false, length = 2000)
     String description;
 
-    @Column(nullable = false)
+    @Column(name = "event_date", nullable = false)
     LocalDateTime eventDate;
 
-    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()")
+    @Column(name = "created_on", nullable = false, insertable = false, updatable = false)
     @CreationTimestamp
     LocalDateTime createdOn;
 
-    @Column
+    @Column(name = "published_on")
     LocalDateTime publishedOn;
 
     @Column(nullable = false)

@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS hits
     ip  VARCHAR(45)   NOT NULL,
     timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     CONSTRAINT pk_hits PRIMARY KEY (id)
-);
+    );
