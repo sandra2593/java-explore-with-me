@@ -18,6 +18,7 @@ import ru.practicum.ewm.exception.EventDateException;
 import ru.practicum.ewm.exception.NotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class CategoryService implements CategoryServiceIntf {
         }
 
         Category catWithName = categoryStorage.findCategoryByName(newCategoryDto.getName()).orElse(null);
-        if (catWithName != null) {
+        if (Objects.nonNull(catWithName)) {
             throw new DuplicateException(String.format("есть такая категория ", catWithName));
         }
 
