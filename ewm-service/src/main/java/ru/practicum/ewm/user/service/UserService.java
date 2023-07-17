@@ -61,11 +61,9 @@ public class UserService implements UserServiceIntf {
     @Override
     public List<UserDto> getAll(List<Long> userIds, Pageable pageable) {
         if (Objects.nonNull(userIds)) {
-            return userStorage.findAllByIdIn(userIds, pageable)
-                    .stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+            return userStorage.findAllByIdIn(userIds, pageable).stream().map(UserMapper::toUserDto).collect(Collectors.toList());
         } else {
-            return userStorage.findAll(pageable).getContent()
-                    .stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+            return userStorage.findAll(pageable).getContent().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
         }
 
     }
