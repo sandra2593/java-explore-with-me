@@ -1,4 +1,4 @@
-package ru.practicum.stats.gateway;
+package ru.practicum.ewm.datemapper;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
-
 public class DateFormatMapper {
     @Value("${format.pattern.datetime}")
     private String dateTimeFormat;

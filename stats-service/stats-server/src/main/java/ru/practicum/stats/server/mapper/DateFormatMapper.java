@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
-
 public class DateFormatMapper {
     @Value("${format.pattern.datetime}")
     private String dateTimeFormat;

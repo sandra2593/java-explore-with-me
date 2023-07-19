@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.stats.dto.HitDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
     @Autowired
-    public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("${STATS_SERVER_URL}") String serverUrl, RestTemplateBuilder builder) {
         super(builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new).build()
         );
@@ -26,7 +25,7 @@ public class StatsClient extends BaseClient {
         return post("/hit", hitDto);
     }
 
-    public ResponseEntity<Object> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+    public ResponseEntity<Object> get(String start, String end, List<String> uris, boolean unique) {
         Map<String, Object> parameters = Map.of("start", start, "end", end, "uris", String.join(", ", uris), "unique", unique);
 
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
