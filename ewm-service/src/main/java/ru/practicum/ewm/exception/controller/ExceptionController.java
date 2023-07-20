@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler({DuplicateException.class, CantChangeStatusException.class, CantParticipateInEventException.class, CantDeleteCategoryWithEventsException.class, EventStatusException.class})
+    @ExceptionHandler({DuplicateException.class, CantChangeStatusException.class, CantParticipateInEventException.class, CantDeleteCategoryWithEventsException.class, EventStatusException.class, CantDeleteCommentException.class, CantCommentException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleConflictExceptions(RuntimeException ex) {
         return Map.of("message", ex.getMessage());
@@ -22,7 +22,7 @@ public class ExceptionController {
         return Map.of("message", ex.getMessage());
     }
 
-    @ExceptionHandler(EventDateException.class)
+    @ExceptionHandler({EventDateException.class, CantCommentBadStatusException.class, CantCommentLengthException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBadRequestExceptions(RuntimeException ex) {
         return Map.of("message", ex.getMessage());
